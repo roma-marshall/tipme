@@ -20,11 +20,11 @@
           <input v-model="tg" placeholder="Link to Telegram" class="input" />
           <input v-model="image" placeholder="Image URL" class="input" />
 
-          <button @click="updateProfile" class="px-5 py-2 rounded-xl bg-emerald-500/90 text-black font-semibold
+          <button :disabled="isUpdating" @click="updateProfile" class="px-5 py-2 rounded-xl bg-emerald-500/90 text-black font-semibold
                    transition-all duration-200 ease-in-out
                    hover:bg-emerald-400 hover:shadow-[0_0_15px_rgba(52,211,153,0.5)]
                    active:bg-emerald-600 active:scale-95 w-full">
-            💾 Save Changes
+            {{ isUpdating ? "Updating..." : "💾 Update Profile" }}
           </button>
 
           <p v-if="txHash" class="text-xs text-emerald-400 mt-3 break-all">
@@ -41,7 +41,10 @@ import { ref, onMounted, computed } from "vue";
 import { useAppKitAccount } from "@reown/appkit/vue";
 import { useContract } from "~/composables/useContract";
 import { navigateTo } from "#app";
+import { useToast } from "~/composables/useToast";
 
+const { show } = useToast();
+const isUpdating = ref(false);
 const account = useAppKitAccount("eip155:11155111");
 const isConnected = computed(() => account.value?.status === "connected");
 
@@ -79,14 +82,33 @@ onMounted(async () => {
 
 async function updateProfile() {
   try {
+    isUpdating.value = true;
     const { setProfile } = await useContract();
-    const tx = await setProfile(username.value, bio.value, x.value, tg.value, image.value);
-    txHash.value = tx.hash;
-    const addr = account.value?.address;
-    if (addr) navigateTo(`/${addr}`);
+
+    show("⏳ Updating profile on-chain… Please confirm in wallet");
+    const tx = await setProfile(
+        username.value,
+        bio.value,
+        x.value,
+        tg.value,
+        image.value
+    );
+
+    show("⏳ Transaction pending… waiting for confirmation");
+    const receipt = await tx.wait(); // <— ждём подтверждение включения в блок
+
+    if (receipt.status === 1) {
+      show("✅ Profile updated successfully!");
+      const addr = account.value?.address;
+      if (addr) navigateTo(`/${addr}`);
+    } else {
+      show("⚠️ Transaction reverted on-chain", "error");
+    }
   } catch (err) {
     console.error(err);
-    alert("Error updating profile.");
+    show("❌ Error updating profile or transaction rejected", "error");
+  } finally {
+    isUpdating.value = false;
   }
 }
 </script>

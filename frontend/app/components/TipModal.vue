@@ -51,8 +51,8 @@ const emit = defineEmits(["close"]);
 
 const amount = ref("0.005");
 const quote = ref<{ fee: string; net: string } | null>(null);
-
 const { sendTip, getQuote } = await useTipJar();
+const { show } = useToast();
 
 watch(amount, async (val) => {
   if (!val || Number(val) < 0.001) return (quote.value = null);
@@ -62,14 +62,22 @@ watch(amount, async (val) => {
 async function send() {
   if (!props.to) return alert("No receiver address");
   if (Number(amount.value) < 0.001) return alert("Min tip 0.001 ETH");
+
   try {
-    const hash = await sendTip(props.to, amount.value);
-    console.log("✅ Tip tx:", hash);
-    alert("Tip sent successfully!");
+    show("⏳ Sending tip… please confirm in wallet");
+    const tx = await sendTip(props.to, amount.value);
+    show("⏳ Transaction pending in network…");
+
+    const receipt = await tx.wait(); // <— ждём майнинг
+    if (receipt.status === 1) {
+      show("✅ Tip confirmed!");
+    } else {
+      show("⚠️ Tx reverted on-chain", "error");
+    }
     emit("close");
   } catch (err) {
     console.error(err);
-    alert("Transaction failed.");
+    show("❌ Transaction failed or rejected", "error");
   }
 }
 </script>

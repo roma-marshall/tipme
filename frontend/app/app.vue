@@ -84,6 +84,7 @@
         © 2025 <span class="text-emerald-400 font-semibold">Vires Labs</span> — built with 💚 on EVM
       </footer>
     </div>
+    <ToastList />
   </client-only>
 </template>
 
@@ -93,7 +94,9 @@ import { useAppKit, useAppKitAccount } from "@reown/appkit/vue";
 import { useRouter } from "vue-router";
 import { ethers } from "ethers";
 import TipJar from "~/abi/TipJar.json";
+import { useToast } from "~/composables/useToast";
 
+const { show } = useToast();
 const router = useRouter();
 const account = useAppKitAccount("eip155:11155111");
 const isConnected = computed(() => account.value?.status === "connected");
@@ -122,14 +125,20 @@ async function withdrawTips() {
     const amountWei = await contract.balances(addr);
     if (amountWei === 0n) return alert("No tips to withdraw");
 
+    show("⏳ Confirm withdrawal in wallet…");
     const tx = await contract.withdrawMyTips();
-    await tx.wait();
+    show("⏳ Transaction pending in network…");
 
-    alert("✅ Tips withdrawn successfully!");
-    await fetchBalance();
+    const receipt = await tx.wait();
+    if (receipt.status === 1) {
+      show("✅ Withdrawal confirmed!");
+      await fetchBalance();
+    } else {
+      show("⚠️ Tx reverted", "error");
+    }
   } catch (e) {
     console.error(e);
-    alert("Withdraw failed");
+    show("❌ Withdraw failed or rejected", "error");
   }
 }
 

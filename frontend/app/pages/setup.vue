@@ -20,8 +20,8 @@
           <input v-model="tg" placeholder="Link to Telegram" class="input" />
           <input v-model="image" placeholder="Image URL" class="input" />
 
-          <button @click="saveProfile" class="btn w-full mt-4">
-            💾 Save Profile
+          <button :disabled="isSaving" @click="saveProfile" class="btn w-full mt-4">
+            {{ isSaving ? "Saving..." : "💾 Save Profile" }}
           </button>
         </div>
       </div>
@@ -34,7 +34,10 @@ import { ref, onMounted, computed } from "vue";
 import { useAppKitAccount } from "@reown/appkit/vue";
 import { useContract } from "~/composables/useContract";
 import { navigateTo } from "#app";
+import { useToast } from "~/composables/useToast";
 
+const { show } = useToast();
+const isSaving = ref(false);
 const account = useAppKitAccount("eip155:11155111");
 const isConnected = computed(() => account.value?.status === "connected");
 
@@ -68,14 +71,32 @@ onMounted(async () => {
 
 async function saveProfile() {
   try {
+    isSaving.value = true;
     const { setProfile } = await useContract();
-    const tx = await setProfile(username.value, bio.value, x.value, tg.value, image.value);
-    await tx.wait();
-    const addr = account.value?.address;
-    if (addr) navigateTo(`/${addr}`);
+    show("⏳ Saving profile on-chain… Please confirm in wallet");
+    const tx = await setProfile(
+        username.value,
+        bio.value,
+        x.value,
+        tg.value,
+        image.value
+    );
+
+    show("⏳ Transaction pending… waiting for confirmation");
+    const receipt = await tx.wait();
+
+    if (receipt.status === 1) {
+      show("✅ Profile successfully saved!");
+      const addr = account.value?.address;
+      if (addr) navigateTo(`/${addr}`);
+    } else {
+      show("⚠️ Transaction reverted on-chain", "error");
+    }
   } catch (err) {
     console.error(err);
-    alert("Error saving profile.");
+    show("❌ Error saving profile or transaction rejected", "error");
+  } finally {
+    isSaving.value = false;
   }
 }
 </script>
