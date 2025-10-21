@@ -11,6 +11,7 @@ export default defineNuxtConfig({
         public: {
             // projectId: process.env.NUXT_PUBLIC_PROJECT_ID,
             projectId: import.meta.env.NUXT_PUBLIC_PROJECT_ID,
+            rpcUrl: import.meta.env.NUXT_PUBLIC_SEPOLIA_RPC_URL,
         },
     },
     app: {
