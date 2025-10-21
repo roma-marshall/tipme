@@ -34,9 +34,8 @@ import { ref, onMounted, computed } from "vue";
 import { useAppKitAccount } from "@reown/appkit/vue";
 import { useContract } from "~/composables/useContract";
 import { navigateTo } from "#app";
-import { useToast } from "~/composables/useToast";
+import { useTxToast } from "~/composables/useTxToast";
 
-const { show, close } = useToast();
 const isSaving = ref(false);
 const account = useAppKitAccount("eip155:11155111");
 const isConnected = computed(() => account.value?.status === "connected");
