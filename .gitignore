@@ -1,24 +1,73 @@
+# ============================================
+# Nuxt 3 / Hardhat / Node.js project (.npm)
+# ============================================
+
 # Nuxt dev/build outputs
-.output
-.data
-.nuxt
-.nitro
-.cache
-dist
+.output/
+.data/
+.nuxt/
+.nitro/
+.cache/
+dist/
 
 # Node dependencies
-node_modules
+node_modules/
 
 # Logs
-logs
+logs/
 *.log
+npm-debug.log*
+debug.log*
 
-# Misc
+# Miscellaneous
 .DS_Store
-.fleet
-.idea
+.fleet/
+.idea/
+.vscode/
+Thumbs.db
 
-# Local env files
+# ============================================
+# Environment files (keep .env.example only)
+# ============================================
 .env
 .env.*
 !.env.example
+
+# ============================================
+# Hardhat build & cache
+# ============================================
+artifacts/
+cache/
+typechain/
+coverage/
+types/
+
+# ============================================
+# Compilation & bundles
+# ============================================
+bundle/
+dist/
+build/
+tmp/
+*.tsbuildinfo
+
+# ============================================
+# Deployment platforms
+# ============================================
+.vercel/
+.netlify/
+
+# ============================================
+# OS & temporary files
+# ============================================
+*.pid
+*.seed
+*.bak
+*.orig
+*.swp
+*.tmp
+
+# ============================================
+# Keep Solidity sources visible
+# ============================================
+!contracts/**/*.sol
