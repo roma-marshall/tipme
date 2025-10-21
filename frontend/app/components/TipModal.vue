@@ -56,7 +56,7 @@ const quote = ref<{ fee: string; net: string } | null>(null);
 const loading = ref(false);
 
 const { sendTip, getQuote } = await useTipJar();
-const { show } = useToast();
+const { show, close } = useToast();
 
 watch(amount, async (val) => {
   if (!val || Number(val) < 0.001) return (quote.value = null);
@@ -69,15 +69,19 @@ async function send() {
     if (Number(amount.value) < 0.001) return show("❌ Min tip 0.001 ETH", "error");
 
     loading.value = true;
-    show("⏳ Sending tip… Please confirm in wallet");
+    const pendingId = show("⏳ Sending tip… Confirm in wallet", "info", true);
 
-    const tx = await sendTip(props.to, amount.value); // ✅ tx — это TransactionResponse
-    show("⏳ Transaction pending… waiting for confirmation");
+    const tx = await sendTip(props.to, amount.value);
+    close(pendingId);
 
-    const receipt = await tx.wait(); // ✅ теперь .wait() доступен
+    const waitId = show("⏳ Transaction pending… waiting for confirmation", "info", true);
+    const receipt = await tx.wait();
+    close(waitId);
+
     if (receipt.status === 1) {
-      show("✅ Tip confirmed!");
-      setTimeout(() => emit("close"), 800);
+      const link = `https://sepolia.etherscan.io/tx/${tx.hash}`;
+      show("✅ Tip confirmed!", "success", false, link);
+      setTimeout(() => emit("close"), 1000);
     } else {
       show("⚠️ Transaction reverted on-chain", "error");
     }

@@ -96,7 +96,7 @@ import { ethers } from "ethers";
 import TipJar from "~/abi/TipJar.json";
 import { useToast } from "~/composables/useToast";
 
-const { show } = useToast();
+const { show, close } = useToast();
 const router = useRouter();
 const account = useAppKitAccount("eip155:11155111");
 const isConnected = computed(() => account.value?.status === "connected");
@@ -116,29 +116,40 @@ const openConnectModal = () => {
 
 async function withdrawTips() {
   try {
-    if (!window.ethereum) return alert("Wallet not detected");
+    if (!window.ethereum) return show("Wallet not detected", "error");
+
     const provider = new ethers.BrowserProvider(window.ethereum);
     const signer = await provider.getSigner();
     const contract = new ethers.Contract(TipJar.address, TipJar.abi, signer);
 
     const addr = await signer.getAddress();
     const amountWei = await contract.balances(addr);
-    if (amountWei === 0n) return alert("No tips to withdraw");
 
-    show("⏳ Confirm withdrawal in wallet…");
+    if (amountWei === 0n) return show("No tips to withdraw", "error");
+
+    // 1️⃣ ожидаем подтверждения в кошельке
+    const confirmId = show("⏳ Confirm withdrawal in wallet…", "info", true);
+
     const tx = await contract.withdrawMyTips();
-    show("⏳ Transaction pending in network…");
 
-    const receipt = await tx.wait();
+    // 2️⃣ подтверждено, ждём включения в блок
+    close(confirmId);
+    const waitId = show("⏳ Transaction pending… waiting for confirmation", "info", true);
+
+    const receipt = await tx.wait(); // ⏳ ожидание майнинга
+    close(waitId);
+
+    // 3️⃣ успешное подтверждение
     if (receipt.status === 1) {
-      show("✅ Withdrawal confirmed!");
-      await fetchBalance();
+      const link = `https://sepolia.etherscan.io/tx/${tx.hash}`;
+      show("✅ Withdrawal confirmed!", "success", false, link);
+      await fetchBalance(); // обновляем баланс
     } else {
-      show("⚠️ Tx reverted", "error");
+      show("⚠️ Transaction reverted on-chain", "error");
     }
-  } catch (e) {
-    console.error(e);
-    show("❌ Withdraw failed or rejected", "error");
+  } catch (err) {
+    console.error(err);
+    show("❌ Withdrawal failed or rejected", "error");
   }
 }
 
