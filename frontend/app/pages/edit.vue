@@ -43,7 +43,7 @@ import { useContract } from "~/composables/useContract";
 import { navigateTo } from "#app";
 import { useToast } from "~/composables/useToast";
 
-const { show } = useToast();
+const { show, close } = useToast();
 const isUpdating = ref(false);
 const account = useAppKitAccount("eip155:11155111");
 const isConnected = computed(() => account.value?.status === "connected");
@@ -85,7 +85,9 @@ async function updateProfile() {
     isUpdating.value = true;
     const { setProfile } = await useContract();
 
-    show("⏳ Updating profile on-chain… Please confirm in wallet");
+    // 1️⃣ подтверждение в кошельке
+    const confirmId = show("⏳ Updating profile on-chain… Please confirm in wallet", "info", true);
+
     const tx = await setProfile(
         username.value,
         bio.value,
@@ -94,11 +96,15 @@ async function updateProfile() {
         image.value
     );
 
-    show("⏳ Transaction pending… waiting for confirmation");
-    const receipt = await tx.wait(); // <— ждём подтверждение включения в блок
+    // 2️⃣ ожидание включения в блок
+    close(confirmId);
+    const waitId = show("⏳ Transaction pending… waiting for confirmation", "info", true);
+    const receipt = await tx.wait();
+    close(waitId);
 
+    // 3️⃣ успех
     if (receipt.status === 1) {
-      show("✅ Profile updated successfully!");
+      show("✅ Profile updated successfully!", "success", false);
       const addr = account.value?.address;
       if (addr) navigateTo(`/${addr}`);
     } else {
