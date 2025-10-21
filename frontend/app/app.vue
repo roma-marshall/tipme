@@ -46,9 +46,9 @@
             <div
                 class="w-28 h-28 rounded-full bg-gradient-to-br from-emerald-500 to-teal-400 mx-auto"
             ></div>
-            <h2 class="text-2xl font-semibold mt-4">Roman Lytin</h2>
+            <h2 class="text-2xl font-semibold mt-4">Joe Doe</h2>
             <p class="text-gray-400 text-sm">
-              Building Web3 apps at Vires Labs 🌐
+              Building Web3 apps 🌐
             </p>
 
             <div
