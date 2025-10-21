@@ -22,9 +22,10 @@
           <button
               v-if="isConnected"
               @click="withdrawTips"
-              class="flex items-center gap-2 bg-emerald-500/90 text-black font-semibold px-4 py-2 rounded-xl
-                   transition-all duration-200 ease-in-out hover:bg-emerald-400
-                   hover:shadow-[0_0_15px_rgba(52,211,153,0.5)] active:scale-95"
+              class="px-5 py-2 rounded-xl bg-emerald-500/90 text-black font-semibold
+                   transition-all duration-200 ease-in-out
+                   hover:bg-emerald-400 hover:shadow-[0_0_15px_rgba(52,211,153,0.5)]
+                   active:bg-emerald-600 active:scale-95"
           >
             💰 Withdraw <span v-if="balance !== null">({{ balance }} ETH)</span>
           </button>
@@ -87,7 +88,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
+import { ref, onMounted, onUnmounted, watch, computed } from "vue";
 import { useAppKit, useAppKitAccount } from "@reown/appkit/vue";
 import { useRouter } from "vue-router";
 import { ethers } from "ethers";
@@ -98,6 +99,7 @@ const account = useAppKitAccount("eip155:11155111");
 const isConnected = computed(() => account.value?.status === "connected");
 
 const balance = ref<string | null>(null);
+let interval: ReturnType<typeof setInterval> | null = null;
 
 const goHome = () => {
   const addr = account.value?.address;
@@ -124,7 +126,7 @@ async function withdrawTips() {
     await tx.wait();
 
     alert("✅ Tips withdrawn successfully!");
-    balance.value = "0";
+    await fetchBalance();
   } catch (e) {
     console.error(e);
     alert("Withdraw failed");
@@ -148,7 +150,19 @@ async function fetchBalance() {
   }
 }
 
+// 🟢 Автообновление каждые 15 секунд
 onMounted(() => {
   fetchBalance();
+  interval = setInterval(fetchBalance, 15000);
+});
+
+// 🧹 Чистим при размонтировании
+onUnmounted(() => {
+  if (interval) clearInterval(interval);
+});
+
+// 🔁 Обновляем, если кошелёк подключился или сменился
+watch(isConnected, (connected) => {
+  if (connected) fetchBalance();
 });
 </script>

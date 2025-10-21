@@ -23,8 +23,10 @@
         <div class="mt-5 flex flex-col gap-2">
           <button
               @click="send"
-              class="bg-emerald-500 text-black font-semibold py-2 rounded-lg
-                   transition-all duration-200 hover:bg-emerald-400 hover:shadow-[0_0_15px_rgba(52,211,153,0.5)]"
+              class="px-5 py-2 rounded-xl bg-emerald-500/90 text-black font-semibold
+                   transition-all duration-200 ease-in-out
+                   hover:bg-emerald-400 hover:shadow-[0_0_15px_rgba(52,211,153,0.5)]
+                   active:bg-emerald-600 active:scale-95"
           >
             Send Tip
           </button>
