@@ -6,7 +6,15 @@
           class="w-full flex justify-between items-center px-8 py-4 border-b border-gray-800"
       >
         <h1 class="text-xl font-semibold tracking-wide">tipme.app</h1>
-        <appkit-button label="Connect Wallet" />
+        <!-- Connect button -->
+        <appkit-button v-if="isConnected" label="Connect Wallet" />
+        <button
+            v-if="!isConnected"
+            class="mt-6 bg-amber-500 hover:bg-amber-400 text-black font-semibold px-8 py-3 rounded-2xl transition-all shadow-lg shadow-amber-500/20"
+            @click="openConnectModal"
+        >
+          Connect Wallet
+        </button>
       </header>
 
       <div class="flex flex-1">
@@ -81,16 +89,16 @@
 
 <script setup lang="ts">
 import { computed } from "vue";
-import { useAppKitAccount } from "@reown/appkit/vue";
+import { useAppKitAccount, useAppKit } from "@reown/appkit/vue";
 
 const account = useAppKitAccount("eip155:11155111");
 const isConnected = computed(() => account.value?.status === "connected");
 
 const shortAddress = (addr?: string) =>
     addr ? `${addr.slice(0, 6)}...${addr.slice(-4)}` : "";
-</script>
 
-<style>
-/* Ты можешь добавить в проект иконки Tabler:
-   npm install @tabler/icons-vue — или использовать heroicons */
-</style>
+const openConnectModal = () => {
+  const { open } = useAppKit();
+  open({ view: "Connect" });
+};
+</script>
