@@ -1,5 +1,5 @@
 import { ethers } from "ethers";
-import TipMe from "../abi/TipMe.json";
+import TipMe from "~/abi/TipMe.json";
 
 /**
  * Создаёт контракт TipMe с автоматическим выбором:

@@ -17,12 +17,25 @@
         </template>
 
         <template v-else>
-          <img
-              v-if="profile.image"
-              :src="profile.image"
-              alt="avatar"
-              class="w-24 h-24 rounded-full mx-auto object-cover"
-          />
+          <div class="mx-auto w-24 h-24 rounded-full overflow-hidden">
+            <img
+                v-if="profile.image"
+                :src="profile.image"
+                alt="avatar"
+                class="w-full h-full object-cover"
+            />
+
+            <!-- красивый плейсхолдер -->
+            <div
+                v-else
+                class="flex items-center justify-center w-full h-full rounded-full
+           bg-gradient-to-br from-emerald-500 to-teal-600 text-black
+           font-bold text-2xl shadow-inner select-none"
+            >
+              {{ profile.username ? profile.username[0].toUpperCase() : "?" }}
+            </div>
+          </div>
+
           <h2 class="text-2xl font-semibold">{{ profile.username }}</h2>
           <p class="text-gray-400">{{ profile.bio }}</p>
 
@@ -52,7 +65,7 @@
           </div>
 
           <div class="mt-6">
-            <button class="btn">💸 Tip Me</button>
+            <button class="btn bg-emerald-500 text-black font-semibold px-5 py-2 rounded-lg transition-all duration-200 ease-in-out hover:bg-emerald-400 hover:shadow-lg hover:-translate-y-0.5 active:bg-emerald-600 active:translate-y-0">💸 Tip Me</button>
           </div>
         </template>
       </div>
@@ -63,7 +76,7 @@
 <script setup lang="ts">
 import { onMounted, ref, computed, watch } from "vue";
 import { useRoute } from "#app";
-import { useContract } from "../composables/useContract";
+import { useContract } from "~/composables/useContract";
 
 type Prof = { username: string; bio: string; x: string; tg: string; image: string };
 
@@ -118,11 +131,4 @@ watch(addressParam, () => fetchProfile());
 </script>
 
 <style scoped>
-.btn {
-  background: #10b981;
-  color: black;
-  padding: 10px 20px;
-  border-radius: 8px;
-  font-weight: 600;
-}
 </style>

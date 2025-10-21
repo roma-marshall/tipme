@@ -1,17 +1,17 @@
 <template>
   <client-only>
     <main class="min-h-screen flex flex-col items-center justify-center bg-gray-950 text-white p-8">
-      <!-- Проверяем подключение кошелька -->
+      <!-- Если не подключен -->
       <div v-if="!isConnected" class="text-center space-y-4">
-        <p class="text-gray-400">Connect your wallet to create a profile 💳</p>
+        <p class="text-gray-400">Connect your wallet to edit your profile 💳</p>
         <appkit-button label="Connect Wallet" />
       </div>
 
-      <!-- Форма создания профиля -->
+      <!-- Если подключен -->
       <div v-else class="w-full max-w-md space-y-5">
-        <h2 class="text-2xl font-semibold text-center mb-4">Create your Profile</h2>
+        <h2 class="text-2xl font-semibold text-center mb-4">Edit your Profile</h2>
 
-        <div v-if="loading" class="text-gray-400 text-center">Checking profile...</div>
+        <div v-if="loading" class="text-gray-400 text-center">Loading...</div>
 
         <div v-else class="space-y-3">
           <input v-model="username" placeholder="Username" class="input" />
@@ -20,9 +20,13 @@
           <input v-model="tg" placeholder="Link to Telegram" class="input" />
           <input v-model="image" placeholder="Image URL" class="input" />
 
-          <button @click="saveProfile" class="btn w-full mt-4">
-            💾 Save Profile
+          <button @click="updateProfile" class="btn w-full mt-4">
+            💾 Save Changes
           </button>
+
+          <p v-if="txHash" class="text-xs text-emerald-400 mt-3 break-all">
+            Tx: {{ txHash }}
+          </p>
         </div>
       </div>
     </main>
@@ -43,6 +47,7 @@ const bio = ref("");
 const x = ref("");
 const tg = ref("");
 const image = ref("");
+const txHash = ref("");
 const loading = ref(true);
 
 onMounted(async () => {
@@ -57,8 +62,11 @@ onMounted(async () => {
 
   try {
     const res = await getProfile(addr);
-    const usernameOnChain = res?.username || res?.[0] || "";
-    if (usernameOnChain) navigateTo("/edit");
+    username.value = res?.username || res?.[0] || "";
+    bio.value = res?.bio || res?.[1] || "";
+    x.value = res?.x || res?.[2] || "";
+    tg.value = res?.tg || res?.[3] || "";
+    image.value = res?.image || res?.[4] || "";
   } catch (e) {
     console.error(e);
   } finally {
@@ -66,16 +74,16 @@ onMounted(async () => {
   }
 });
 
-async function saveProfile() {
+async function updateProfile() {
   try {
     const { setProfile } = await useContract();
     const tx = await setProfile(username.value, bio.value, x.value, tg.value, image.value);
-    await tx.wait();
+    txHash.value = tx.hash;
     const addr = account.value?.address;
     if (addr) navigateTo(`/${addr}`);
   } catch (err) {
     console.error(err);
-    alert("Error saving profile.");
+    alert("Error updating profile.");
   }
 }
 </script>

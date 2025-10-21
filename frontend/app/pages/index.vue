@@ -9,7 +9,14 @@
       </p>
 
       <!-- Reown Connect Button -->
-      <appkit-button label="Connect Wallet" />
+      <appkit-button v-if="isConnected" label="Connect Wallet" />
+      <button
+          v-if="!isConnected"
+          class="btn bg-amber-500 text-black font-semibold px-5 py-2 rounded-lg transition-all duration-200 ease-in-out hover:bg-amber-400 hover:shadow-lg hover:-translate-y-0.5 active:bg-amber-600 active:translate-y-0"
+          @click="openConnectModal"
+      >
+        Connect Wallet
+      </button>
 
       <div v-if="account?.address" class="mt-6">
         <p class="text-sm opacity-70">Connected:</p>
@@ -20,12 +27,13 @@
 </template>
 
 <script setup lang="ts">
-import { useAppKitAccount } from "@reown/appkit/vue";
-import { watch } from "vue";
+import { computed, watch } from "vue";
+import { useAppKit, useAppKitAccount } from "@reown/appkit/vue";
 import { navigateTo } from "#app";
 
 // подписываемся на состояние аккаунта (reactive)
 const account = useAppKitAccount("eip155:11155111");
+const isConnected = computed(() => account.value?.status === "connected");
 
 // наблюдаем за статусом
 watch(
@@ -40,4 +48,9 @@ watch(
 
 const shortAddress = (addr?: string) =>
     addr ? `${addr.slice(0, 6)}...${addr.slice(-4)}` : "";
+
+const openConnectModal = () => {
+  const { open } = useAppKit();
+  open({ view: "Connect" });
+};
 </script>
