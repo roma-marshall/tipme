@@ -65,10 +65,13 @@
           </div>
 
           <div class="mt-6">
-            <button class="px-5 py-2 rounded-xl bg-emerald-500/90 text-black font-semibold
+            <button @click="showTipModal = true"
+                    class="px-5 py-2 rounded-xl bg-emerald-500/90 text-black font-semibold
                    transition-all duration-200 ease-in-out
                    hover:bg-emerald-400 hover:shadow-[0_0_15px_rgba(52,211,153,0.5)]
                    active:bg-emerald-600 active:scale-95">💸 Tip Me</button>
+
+            <TipModal :visible="showTipModal" :to="addressParam" @close="showTipModal = false" />
           </div>
         </template>
       </div>
@@ -80,7 +83,9 @@
 import { onMounted, ref, computed, watch } from "vue";
 import { useRoute } from "#app";
 import { useContract } from "~/composables/useContract";
+import TipModal from "~/components/TipModal.vue";
 
+const showTipModal = ref(false);
 type Prof = { username: string; bio: string; x: string; tg: string; image: string };
 
 const route = useRoute();
