@@ -20,7 +20,10 @@
           <input v-model="tg" placeholder="Link to Telegram" class="input" />
           <input v-model="image" placeholder="Image URL" class="input" />
 
-          <button @click="updateProfile" class="btn w-full mt-4">
+          <button @click="updateProfile" class="px-5 py-2 rounded-xl bg-emerald-500/90 text-black font-semibold
+                   transition-all duration-200 ease-in-out
+                   hover:bg-emerald-400 hover:shadow-[0_0_15px_rgba(52,211,153,0.5)]
+                   active:bg-emerald-600 active:scale-95 w-full">
             💾 Save Changes
           </button>
 

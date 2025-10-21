@@ -65,7 +65,10 @@
           </div>
 
           <div class="mt-6">
-            <button class="btn bg-emerald-500 text-black font-semibold px-5 py-2 rounded-lg transition-all duration-200 ease-in-out hover:bg-emerald-400 hover:shadow-lg hover:-translate-y-0.5 active:bg-emerald-600 active:translate-y-0">💸 Tip Me</button>
+            <button class="px-5 py-2 rounded-xl bg-emerald-500/90 text-black font-semibold
+                   transition-all duration-200 ease-in-out
+                   hover:bg-emerald-400 hover:shadow-[0_0_15px_rgba(52,211,153,0.5)]
+                   active:bg-emerald-600 active:scale-95">💸 Tip Me</button>
           </div>
         </template>
       </div>
