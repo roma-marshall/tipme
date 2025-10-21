@@ -29,7 +29,8 @@
                    hover:bg-emerald-400 hover:shadow-[0_0_15px_rgba(52,211,153,0.5)]
                    active:bg-emerald-600 active:scale-95"
           >
-            Send Tip
+
+            {{ loading ? "Tipping..." : "Send Tip" }}
           </button>
           <button
               @click="$emit('close')"
