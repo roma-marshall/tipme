@@ -41,9 +41,8 @@ import { ref, onMounted, computed } from "vue";
 import { useAppKitAccount } from "@reown/appkit/vue";
 import { useContract } from "~/composables/useContract";
 import { navigateTo } from "#app";
-import { useToast } from "~/composables/useToast";
+import { useTxToast } from "~/composables/useTxToast";
 
-const { show, close } = useToast();
 const isUpdating = ref(false);
 const account = useAppKitAccount("eip155:11155111");
 const isConnected = computed(() => account.value?.status === "connected");
@@ -85,34 +84,25 @@ async function updateProfile() {
     isUpdating.value = true;
     const { setProfile } = await useContract();
 
-    // 1️⃣ подтверждение в кошельке
-    const confirmId = show("⏳ Updating profile on-chain… Please confirm in wallet", "info", true);
-
-    const tx = await setProfile(
-        username.value,
-        bio.value,
-        x.value,
-        tg.value,
-        image.value
+    await useTxToast(
+        () =>
+            setProfile(
+                username.value,
+                bio.value,
+                x.value,
+                tg.value,
+                image.value
+            ),
+        {
+          confirm: "⏳ Updating profile on-chain… Please confirm in wallet",
+          pending: "⏳ Transaction pending… waiting for confirmation",
+          success: "✅ Profile updated successfully!",
+          error: "❌ Error updating profile or transaction rejected",
+        }
     );
 
-    // 2️⃣ ожидание включения в блок
-    close(confirmId);
-    const waitId = show("⏳ Transaction pending… waiting for confirmation", "info", true);
-    const receipt = await tx.wait();
-    close(waitId);
-
-    // 3️⃣ успех
-    if (receipt.status === 1) {
-      show("✅ Profile updated successfully!", "success", false);
-      const addr = account.value?.address;
-      if (addr) navigateTo(`/${addr}`);
-    } else {
-      show("⚠️ Transaction reverted on-chain", "error");
-    }
-  } catch (err) {
-    console.error(err);
-    show("❌ Error updating profile or transaction rejected", "error");
+    const addr = account.value?.address;
+    if (addr) navigateTo(`/${addr}`);
   } finally {
     isUpdating.value = false;
   }

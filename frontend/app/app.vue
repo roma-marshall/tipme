@@ -94,9 +94,8 @@ import { useAppKit, useAppKitAccount } from "@reown/appkit/vue";
 import { useRouter } from "vue-router";
 import { ethers } from "ethers";
 import TipJar from "~/abi/TipJar.json";
-import { useToast } from "~/composables/useToast";
+import { useTxToast } from "~/composables/useTxToast";
 
-const { show, close } = useToast();
 const router = useRouter();
 const account = useAppKitAccount("eip155:11155111");
 const isConnected = computed(() => account.value?.status === "connected");
@@ -124,29 +123,18 @@ async function withdrawTips() {
 
     const addr = await signer.getAddress();
     const amountWei = await contract.balances(addr);
-
     if (amountWei === 0n) return show("No tips to withdraw", "error");
 
-    // 1️⃣ ожидаем подтверждения в кошельке
-    const confirmId = show("⏳ Confirm withdrawal in wallet…", "info", true);
+    // 1️⃣ Выполняем транзакцию через helper
+    await useTxToast(() => contract.withdrawMyTips(), {
+      confirm: "⏳ Confirm withdrawal in wallet…",
+      pending: "⏳ Transaction pending… waiting for confirmation",
+      success: "✅ Withdrawal confirmed!",
+      error: "❌ Withdrawal failed or rejected",
+    });
 
-    const tx = await contract.withdrawMyTips();
-
-    // 2️⃣ подтверждено, ждём включения в блок
-    close(confirmId);
-    const waitId = show("⏳ Transaction pending… waiting for confirmation", "info", true);
-
-    const receipt = await tx.wait(); // ⏳ ожидание майнинга
-    close(waitId);
-
-    // 3️⃣ успешное подтверждение
-    if (receipt.status === 1) {
-      const link = `https://sepolia.etherscan.io/tx/${tx.hash}`;
-      show("✅ Withdrawal confirmed!", "success", false, link);
-      await fetchBalance(); // обновляем баланс
-    } else {
-      show("⚠️ Transaction reverted on-chain", "error");
-    }
+    // 2️⃣ Обновляем баланс после успешного вывода
+    await fetchBalance();
   } catch (err) {
     console.error(err);
     show("❌ Withdrawal failed or rejected", "error");

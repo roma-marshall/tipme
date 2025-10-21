@@ -48,6 +48,7 @@
 <script setup lang="ts">
 import { ref, watch } from "vue";
 import { useTipJar } from "~/composables/useTipJar";
+import { useTxToast } from "~/composables/useTxToast";
 
 const props = defineProps<{ visible: boolean; to: string }>();
 const emit = defineEmits(["close"]);
@@ -57,7 +58,6 @@ const quote = ref<{ fee: string; net: string } | null>(null);
 const loading = ref(false);
 
 const { sendTip, getQuote } = await useTipJar();
-const { show, close } = useToast();
 
 watch(amount, async (val) => {
   if (!val || Number(val) < 0.001) return (quote.value = null);
@@ -65,33 +65,15 @@ watch(amount, async (val) => {
 });
 
 async function send() {
-  try {
-    if (!props.to) return show("❌ Receiver address missing", "error");
-    if (Number(amount.value) < 0.001) return show("❌ Min tip 0.001 ETH", "error");
 
-    loading.value = true;
-    const pendingId = show("⏳ Sending tip… Confirm in wallet", "info", true);
+  await useTxToast(() => sendTip(props.to, amount.value), {
+    confirm: "⏳ Sending tip… please confirm in wallet",
+    pending: "⏳ Tip pending… waiting for confirmation",
+    success: "✅ Tip confirmed!",
+    error: "❌ Tip failed or rejected",
+  });
 
-    const tx = await sendTip(props.to, amount.value);
-    close(pendingId);
-
-    const waitId = show("⏳ Transaction pending… waiting for confirmation", "info", true);
-    const receipt = await tx.wait();
-    close(waitId);
-
-    if (receipt.status === 1) {
-      const link = `https://sepolia.etherscan.io/tx/${tx.hash}`;
-      show("✅ Tip confirmed!", "success", false, link);
-      setTimeout(() => emit("close"), 1000);
-    } else {
-      show("⚠️ Transaction reverted on-chain", "error");
-    }
-  } catch (err) {
-    console.error(err);
-    show("❌ Transaction failed or rejected", "error");
-  } finally {
-    loading.value = false;
-  }
+  emit("close");
 }
 </script>
 

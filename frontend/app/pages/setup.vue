@@ -74,34 +74,25 @@ async function saveProfile() {
     isSaving.value = true;
     const { setProfile } = await useContract();
 
-    // 1️⃣ подтверждение в кошельке
-    const confirmId = show("⏳ Saving profile on-chain… Please confirm in wallet", "info", true);
-
-    const tx = await setProfile(
-        username.value,
-        bio.value,
-        x.value,
-        tg.value,
-        image.value
+    await useTxToast(
+        () =>
+            setProfile(
+                username.value,
+                bio.value,
+                x.value,
+                tg.value,
+                image.value
+            ),
+        {
+          confirm: "⏳ Saving profile on-chain… Please confirm in wallet",
+          pending: "⏳ Transaction pending… waiting for confirmation",
+          success: "✅ Profile successfully saved!",
+          error: "❌ Error saving profile or transaction rejected",
+        }
     );
 
-    // 2️⃣ ожидание включения в блок
-    close(confirmId);
-    const waitId = show("⏳ Transaction pending… waiting for confirmation", "info", true);
-    const receipt = await tx.wait();
-    close(waitId);
-
-    // 3️⃣ успешное сохранение
-    if (receipt.status === 1) {
-      show("✅ Profile successfully saved!", "success", false);
-      const addr = account.value?.address;
-      if (addr) navigateTo(`/${addr}`);
-    } else {
-      show("⚠️ Transaction reverted on-chain", "error");
-    }
-  } catch (err) {
-    console.error(err);
-    show("❌ Error saving profile or transaction rejected", "error");
+    const addr = account.value?.address;
+    if (addr) navigateTo(`/${addr}`);
   } finally {
     isSaving.value = false;
   }
