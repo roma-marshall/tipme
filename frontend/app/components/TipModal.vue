@@ -9,7 +9,6 @@
 
         <input
             v-model="amount"
-            type="number"
             min="0.001"
             step="0.001"
             class="w-full bg-gray-800 text-white border border-gray-700 rounded-lg px-4 py-2 text-center"
