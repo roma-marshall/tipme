@@ -30,9 +30,7 @@ export async function useContract() {
 
     async function setProfile(username: string, bio: string, x: string, tg: string, image: string) {
         if (!signer) throw new Error("Wallet not connected");
-        const tx = await contract.setProfile(username, bio, x, tg, image);
-        await tx.wait();
-        return tx;
+        return await contract.setProfile(username, bio, x, tg, image);
     }
 
     async function getProfile(address: string) {

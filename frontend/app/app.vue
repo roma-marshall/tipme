@@ -18,6 +18,18 @@
 
         <!-- Правая часть шапки -->
         <div class="flex items-center gap-3">
+          <!-- Feed -->
+          <button
+              v-if="isConnected"
+              @click="$router.push('/feed')"
+              class="px-5 py-2 rounded-xl bg-amber-500/90 text-black font-semibold
+                   transition-all duration-200 ease-in-out
+                   hover:bg-amber-400 hover:shadow-[0_0_15px_rgba(251,191,36,0.5)]
+                   active:bg-amber-600 active:scale-95"
+          >
+            🌍 Global Tips Feed
+          </button>
+
           <!-- Вывести чаевые -->
           <button
               v-if="isConnected"
@@ -84,6 +96,7 @@
         © 2025 <span class="text-emerald-400 font-semibold">Vires Labs</span> — built with 💚 on EVM
       </footer>
     </div>
+    <ToastList />
   </client-only>
 </template>
 
@@ -93,6 +106,7 @@ import { useAppKit, useAppKitAccount } from "@reown/appkit/vue";
 import { useRouter } from "vue-router";
 import { ethers } from "ethers";
 import TipJar from "~/abi/TipJar.json";
+import { useTxToast } from "~/composables/useTxToast";
 
 const router = useRouter();
 const account = useAppKitAccount("eip155:11155111");
@@ -113,23 +127,29 @@ const openConnectModal = () => {
 
 async function withdrawTips() {
   try {
-    if (!window.ethereum) return alert("Wallet not detected");
+    if (!window.ethereum) return show("Wallet not detected", "error");
+
     const provider = new ethers.BrowserProvider(window.ethereum);
     const signer = await provider.getSigner();
     const contract = new ethers.Contract(TipJar.address, TipJar.abi, signer);
 
     const addr = await signer.getAddress();
     const amountWei = await contract.balances(addr);
-    if (amountWei === 0n) return alert("No tips to withdraw");
+    if (amountWei === 0n) return show("No tips to withdraw", "error");
 
-    const tx = await contract.withdrawMyTips();
-    await tx.wait();
+    // 1️⃣ Выполняем транзакцию через helper
+    await useTxToast(() => contract.withdrawMyTips(), {
+      confirm: "⏳ Confirm withdrawal in wallet…",
+      pending: "⏳ Transaction pending… waiting for confirmation",
+      success: "✅ Withdrawal confirmed!",
+      error: "❌ Withdrawal failed or rejected",
+    });
 
-    alert("✅ Tips withdrawn successfully!");
+    // 2️⃣ Обновляем баланс после успешного вывода
     await fetchBalance();
-  } catch (e) {
-    console.error(e);
-    alert("Withdraw failed");
+  } catch (err) {
+    console.error(err);
+    show("❌ Withdrawal failed or rejected", "error");
   }
 }
 

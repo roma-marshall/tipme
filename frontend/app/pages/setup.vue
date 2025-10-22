@@ -20,8 +20,8 @@
           <input v-model="tg" placeholder="Link to Telegram" class="input" />
           <input v-model="image" placeholder="Image URL" class="input" />
 
-          <button @click="saveProfile" class="btn w-full mt-4">
-            💾 Save Profile
+          <button :disabled="isSaving" @click="saveProfile" class="btn w-full mt-4">
+            {{ isSaving ? "Saving..." : "💾 Save Profile" }}
           </button>
         </div>
       </div>
@@ -34,7 +34,9 @@ import { ref, onMounted, computed } from "vue";
 import { useAppKitAccount } from "@reown/appkit/vue";
 import { useContract } from "~/composables/useContract";
 import { navigateTo } from "#app";
+import { useTxToast } from "~/composables/useTxToast";
 
+const isSaving = ref(false);
 const account = useAppKitAccount("eip155:11155111");
 const isConnected = computed(() => account.value?.status === "connected");
 
@@ -68,14 +70,30 @@ onMounted(async () => {
 
 async function saveProfile() {
   try {
+    isSaving.value = true;
     const { setProfile } = await useContract();
-    const tx = await setProfile(username.value, bio.value, x.value, tg.value, image.value);
-    await tx.wait();
+
+    await useTxToast(
+        () =>
+            setProfile(
+                username.value,
+                bio.value,
+                x.value,
+                tg.value,
+                image.value
+            ),
+        {
+          confirm: "⏳ Saving profile on-chain… Please confirm in wallet",
+          pending: "⏳ Transaction pending… waiting for confirmation",
+          success: "✅ Profile successfully saved!",
+          error: "❌ Error saving profile or transaction rejected",
+        }
+    );
+
     const addr = account.value?.address;
     if (addr) navigateTo(`/${addr}`);
-  } catch (err) {
-    console.error(err);
-    alert("Error saving profile.");
+  } finally {
+    isSaving.value = false;
   }
 }
 </script>
