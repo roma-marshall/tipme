@@ -18,6 +18,18 @@
 
         <!-- Правая часть шапки -->
         <div class="flex items-center gap-3">
+          <!-- Feed -->
+          <button
+              v-if="isConnected"
+              @click="$router.push('/feed')"
+              class="px-5 py-2 rounded-xl bg-amber-500/90 text-black font-semibold
+                   transition-all duration-200 ease-in-out
+                   hover:bg-amber-400 hover:shadow-[0_0_15px_rgba(251,191,36,0.5)]
+                   active:bg-amber-600 active:scale-95"
+          >
+            🌍 Global Tips Feed
+          </button>
+
           <!-- Вывести чаевые -->
           <button
               v-if="isConnected"
