@@ -16,14 +16,15 @@
         ]"
       >
         <img :src="ach.icon" class="w-16 h-16" alt="achievement icon" />
-
         <div class="font-semibold">{{ ach.title }}</div>
         <div class="text-sm text-gray-400">{{ ach.description }}</div>
 
         <div v-if="ach.minted" class="text-emerald-400 text-sm font-medium mt-2">✅ Minted</div>
         <button
             v-else-if="ach.unlocked"
-            class="mt-3 bg-emerald-500 text-black px-4 py-1.5 rounded-lg font-semibold text-sm transition hover:bg-emerald-400 hover:shadow-[0_0_15px_rgba(52,211,153,0.5)]"
+            @click="mintAchievement(ach.id)"
+            class="mt-3 bg-emerald-500 text-black px-4 py-1.5 rounded-lg font-semibold text-sm
+                 transition hover:bg-emerald-400 hover:shadow-[0_0_15px_rgba(52,211,153,0.5)] active:bg-emerald-600"
         >
           Mint NFT
         </button>
@@ -34,14 +35,23 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
+import { ref, onMounted, watch } from "vue";
+import { useAppKitAccount } from "@reown/appkit/vue";
 import { useAchievements } from "~/composables/useAchievements";
 
-const { achievements, loadStatuses } = useAchievements();
-const loading = ref(true);
+const { achievements, loadStatuses, mintAchievement } = useAchievements();
+const account = useAppKitAccount("eip155:11155111");
+const loading = ref(false);
 
-onMounted(async () => {
-  await loadStatuses();
-  loading.value = false;
-});
+// ⏱ следим за появлением адреса после подключения кошелька
+watch(
+    () => account.value?.address,
+    async (addr) => {
+      if (!addr) return;
+      loading.value = true;
+      await loadStatuses();  // теперь address.value уже доступен
+      loading.value = false;
+    },
+    { immediate: true } // запустится и при первом подключении
+);
 </script>
