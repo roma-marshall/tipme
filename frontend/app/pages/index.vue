@@ -3,7 +3,7 @@
     <main
         class="min-h-screen flex flex-col items-center justify-center bg-gray-950 text-white p-8"
     >
-      <h1 class="text-3xl font-semibold mb-4">tipme.app</h1>
+      <h1 class="text-3xl font-semibold mb-4">💸 Tip Me</h1>
       <p class="opacity-70 mb-8 text-sm text-center max-w-md">
         Connect your wallet to create your on-chain profile.
       </p>
