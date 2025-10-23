@@ -1,7 +1,7 @@
 {
   "name": "First Tip",
   "description": "Awarded for sending your very first tip on TipMe. A small step for ETH, a big step for appreciation.",
-  "image": "http://localhost:3000/tip.png",
+  "image": "https://tipmeapp.vercel.app/tip.png",
   "attributes": [
     { "trait_type": "Type", "value": "Action" },
     { "trait_type": "Rarity", "value": "Uncommon" }

@@ -16,7 +16,7 @@ export default defineNuxtConfig({
     },
     app: {
         head: {
-            title: "Nuxt app",
+            title: "tipme.app",
             htmlAttrs: {
                 lang: "en",
             },

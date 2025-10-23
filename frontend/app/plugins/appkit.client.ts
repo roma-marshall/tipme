@@ -11,10 +11,10 @@ export default defineNuxtPlugin(() => {
         networks: [mainnet, sepolia],
         projectId: config.public.projectId,
         metadata: {
-            name: "Nuxt app",
-            description: "Description",
-            url: "http://localhost:3000",
-            icons: ["http://localhost:3000/favicon.ico"],
+            name: "tipme.app",
+            description: "decentralized tipping & creator rewards platform",
+            url: "https://tipmeapp.vercel.app",
+            icons: ["https://tipmeapp.vercel.app/favicon.ico"],
         },
         features: {
             analytics: false,

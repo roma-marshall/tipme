@@ -1,7 +1,7 @@
 {
   "name": "Profile Creator",
   "description": "Awarded for creating your TipMe profile. Every great journey begins with a name.",
-  "image": "http://localhost:3000/profile.png",
+  "image": "https://tipmeapp.vercel.app/profile.png",
   "attributes": [
     { "trait_type": "Type", "value": "Profile" },
     { "trait_type": "Rarity", "value": "Common" }
