@@ -1,0 +1,9 @@
+{
+  "name": "Generous Donor",
+  "description": "Awarded for sending a tip greater than 0.1 ETH. Your generosity lights up the chain.",
+  "image": "https://tipmeapp.vercel.app/generous.png",
+  "attributes": [
+    { "trait_type": "Type", "value": "Generosity" },
+    { "trait_type": "Rarity", "value": "Rare" }
+  ]
+}
