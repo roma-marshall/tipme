@@ -1,0 +1,9 @@
+{
+  "name": "Top 1% Supporter",
+  "description": "Awarded for joining the top 1% of supporters on TipMe. A true legend of the community.",
+  "image": "http://localhost:3000/top.png",
+  "attributes": [
+    { "trait_type": "Type", "value": "Leaderboard" },
+    { "trait_type": "Rarity", "value": "Legendary" }
+  ]
+}

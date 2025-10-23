@@ -26,7 +26,7 @@ async function main() {
   );
 
   const factory = new ethers.ContractFactory(artifact.abi, artifact.bytecode, wallet);
-  const contract = await factory.deploy(wallet.address);
+  const contract = await factory.deploy();
   await contract.waitForDeployment();
 
   const address = await contract.getAddress();

@@ -1,0 +1,9 @@
+{
+  "name": "Fee Helper",
+  "description": "Awarded for supporting TipMe by tipping while the platform fee was active. Thanks for helping keep the lights on!",
+  "image": "http://localhost:3000/fee.png",
+  "attributes": [
+    { "trait_type": "Type", "value": "Support" },
+    { "trait_type": "Rarity", "value": "Epic" }
+  ]
+}

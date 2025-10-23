@@ -1,0 +1,9 @@
+{
+  "name": "10 Tips Sent",
+  "description": "Awarded for sending 10 or more tips. You’re officially part of the TipMe community legends.",
+  "image": "http://localhost:3000/multi.png",
+  "attributes": [
+    { "trait_type": "Type", "value": "Activity" },
+    { "trait_type": "Rarity", "value": "Rare" }
+  ]
+}

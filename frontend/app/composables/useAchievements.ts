@@ -143,7 +143,8 @@ export function useAchievements() {
         const signer = await provider.getSigner();
         const contract = new ethers.Contract(NFTAchievements.address, NFTAchievements.abi, signer);
 
-        const txFn = () => contract.mintAchievement(id);
+        const tokenURI = `${window.location.origin}/achievements/${id}.json`;
+        const txFn = () => contract.mintAchievement(id, tokenURI);
         await useTxToast(txFn, {
             confirm: "⏳ Confirm NFT mint in wallet…",
             pending: "⏳ Minting in progress… waiting for confirmation",
