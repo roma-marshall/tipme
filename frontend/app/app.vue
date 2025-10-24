@@ -51,7 +51,7 @@
                    hover:bg-emerald-400 hover:shadow-[0_0_15px_rgba(52,211,153,0.5)]
                    active:bg-emerald-600 active:scale-95"
           >
-            💰 Withdraw <span v-if="balance !== null">({{ balance }} ETH)</span>
+            💰 Withdraw <span v-if="balance !== null">({{ Number(balance).toFixed(2) }} $FLOW)</span>
           </button>
 
           <!-- View profile -->

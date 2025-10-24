@@ -27,10 +27,30 @@ export default defineNuxtPlugin(() => {
         },
     }
 
+    const flow_evm = {
+        id: 747,
+        name: 'Flow EVM Mainnet',
+        nativeCurrency: {
+            decimals: 18,
+            name: 'FLOW',
+            symbol: 'FLOW',
+        },
+        rpcUrls: {
+            default: {
+                http: ['https://mainnet.evm.nodes.onflow.org'],
+            },
+            public: {
+                http: ['https://mainnet.evm.nodes.onflow.org'],
+            },
+        },
+        blockExplorers: {
+            default: { name: 'Flowscan', url: 'https://evm.flowscan.io' },
+        },
+    }
+
     createAppKit({
         adapters: [new EthersAdapter()],
-        // networks: [mainnet, sepolia, flow_evm_testnet],
-        networks: [flow_evm_testnet],
+        networks: [flow_evm],
         projectId: config.public.projectId,
         metadata: {
             name: "tipme.app",

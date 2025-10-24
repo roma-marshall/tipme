@@ -83,7 +83,7 @@ export function useAchievements() {
         // карта RPC по сетям
         const rpcByChain = {
             11155111: config.public.rpc?.sepolia || "https://ethereum-sepolia.publicnode.com",
-            545: config.public.rpc?.flow_evm_testnet || "https://testnet.evm.nodes.onflow.org",
+            747: config.public.rpc?.flow_evm || "https://mainnet.evm.nodes.onflow.org",
         };
 
         // определяем текущую сеть

@@ -14,7 +14,8 @@ export default defineNuxtConfig({
             // rpcUrl: import.meta.env.NUXT_PUBLIC_SEPOLIA_RPC_URL,
             rpc: {
                 sepolia: import.meta.env.NUXT_PUBLIC_SEPOLIA_RPC_URL,
-                flow_evm_testnet: 'https://testnet.evm.nodes.onflow.org'
+                flow_evm_testnet: 'https://testnet.evm.nodes.onflow.org',
+                flow_evm: 'https://mainnet.evm.nodes.onflow.org'
             }
         },
     },

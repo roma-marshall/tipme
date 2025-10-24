@@ -15,8 +15,8 @@ function formatBps(bps) {
 }
 
 async function main() {
-  const rpcUrl = process.env.FLOW_EVM_TESTNET_RPC_URL;
-  const privateKey = process.env.FLOW_EVM_TESTNET_PRIVATE_KEY;
+  const rpcUrl = process.env.FLOW_EVM_RPC_URL;
+  const privateKey = process.env.FLOW_EVM_PRIVATE_KEY;
 
   if (!rpcUrl || !privateKey) {
     throw new Error("❌ Missing SEPOLIA_RPC_URL or SEPOLIA_PRIVATE_KEY in .env");

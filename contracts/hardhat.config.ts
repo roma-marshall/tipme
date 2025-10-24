@@ -42,6 +42,12 @@ const config: HardhatUserConfig = {
       url: configVariable("FLOW_EVM_TESTNET_RPC_URL"),
       accounts: [configVariable("FLOW_EVM_TESTNET_PRIVATE_KEY")],
     },
+    flowEvm: {
+      type: "http",
+      chainType: "l1",
+      url: configVariable("FLOW_EVM_RPC_URL"),
+      accounts: [configVariable("FLOW_EVM_PRIVATE_KEY")],
+    },
   },
 };
 
