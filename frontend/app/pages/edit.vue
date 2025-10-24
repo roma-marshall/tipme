@@ -4,7 +4,18 @@
       <!-- Если не подключен -->
       <div v-if="!isConnected" class="text-center space-y-4">
         <p class="text-gray-400">Connect your wallet to edit your profile 💳</p>
-        <appkit-button label="Connect Wallet" />
+        <!-- Reown Connect Button -->
+        <appkit-button v-if="isConnected" label="Connect Wallet" />
+        <button
+            v-if="!isConnected"
+            class="px-5 py-2 rounded-xl bg-amber-500 text-black font-semibold
+                   transition-all duration-200 ease-in-out
+                   hover:bg-amber-400 hover:shadow-[0_0_15px_rgba(251,191,36,0.5)]
+                   active:bg-amber-600 active:scale-95"
+            @click="openConnectModal"
+        >
+          Connect Wallet
+        </button>
       </div>
 
       <!-- Если подключен -->
@@ -38,7 +49,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted, computed } from "vue";
-import { useAppKitAccount } from "@reown/appkit/vue";
+import { useAppKit, useAppKitAccount } from "@reown/appkit/vue";
 import { useContract } from "~/composables/useContract";
 import { navigateTo } from "#app";
 import { useTxToast } from "~/composables/useTxToast";
@@ -107,6 +118,11 @@ async function updateProfile() {
     isUpdating.value = false;
   }
 }
+
+const openConnectModal = () => {
+  const { open } = useAppKit();
+  open({ view: "Connect" });
+};
 </script>
 
 <style scoped>
@@ -116,12 +132,5 @@ async function updateProfile() {
   border: 1px solid #333;
   padding: 10px;
   border-radius: 8px;
-}
-.btn {
-  background: #10b981;
-  color: black;
-  padding: 10px;
-  border-radius: 8px;
-  font-weight: 600;
 }
 </style>

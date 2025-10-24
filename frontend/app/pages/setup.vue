@@ -4,7 +4,18 @@
       <!-- Проверяем подключение кошелька -->
       <div v-if="!isConnected" class="text-center space-y-4">
         <p class="text-gray-400">Connect your wallet to create a profile 💳</p>
-        <appkit-button label="Connect Wallet" />
+        <!-- Reown Connect Button -->
+        <appkit-button v-if="isConnected" label="Connect Wallet" />
+        <button
+            v-if="!isConnected"
+            class="px-5 py-2 rounded-xl bg-amber-500 text-black font-semibold
+                   transition-all duration-200 ease-in-out
+                   hover:bg-amber-400 hover:shadow-[0_0_15px_rgba(251,191,36,0.5)]
+                   active:bg-amber-600 active:scale-95"
+            @click="openConnectModal"
+        >
+          Connect Wallet
+        </button>
       </div>
 
       <!-- Форма создания профиля -->
