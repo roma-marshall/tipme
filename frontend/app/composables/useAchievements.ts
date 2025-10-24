@@ -1,6 +1,6 @@
 import { ref, computed } from "vue";
 import { ethers } from "ethers";
-import { useAppKitAccount } from "@reown/appkit/vue";
+import { useAppKitAccount, useAppKitNetwork } from "@reown/appkit/vue";
 import { useTxToast } from "~/composables/useTxToast";
 import NFTAchievements from "~/abi/NFTAchievements.json";
 import TipJar from "~/abi/TipJar.json";
@@ -18,6 +18,7 @@ export type Achievement = {
 export function useAchievements() {
     const account = useAppKitAccount("eip155:11155111");
     const address = computed(() => account.value?.address);
+    const network = useAppKitNetwork();
 
     const achievements = ref<Achievement[]>([
         {
@@ -73,9 +74,28 @@ export function useAchievements() {
     // inside useAchievements.ts
     async function loadStatuses() {
         const config = useRuntimeConfig()
-        if (!address.value || !config.public.rpcUrl) return;
 
-        const provider = new ethers.JsonRpcProvider(config.public.rpcUrl);
+        if (!account.value?.address) {
+            console.warn("⛔ No wallet connected — skipping achievements load");
+            return;
+        }
+
+        // карта RPC по сетям
+        const rpcByChain = {
+            11155111: config.public.rpc?.sepolia || "https://ethereum-sepolia.publicnode.com",
+            545: config.public.rpc?.flow_evm_testnet || "https://testnet.evm.nodes.onflow.org",
+        };
+
+        // определяем текущую сеть
+        const chainId = network.value?.chainId || 11155111; // default Sepolia
+        const rpcUrl = rpcByChain[chainId as keyof typeof rpcByChain];
+
+        if (!rpcUrl) {
+            console.error("❌ Unknown RPC for chain:", chainId);
+            return;
+        }
+
+        const provider = new ethers.JsonRpcProvider(rpcUrl);
         const nft = new ethers.Contract(NFTAchievements.address, NFTAchievements.abi, provider);
         const tipJar = new ethers.Contract(TipJar.address, TipJar.abi, provider);
         const tipMe = new ethers.Contract(TipMe.address, TipMe.abi, provider);
