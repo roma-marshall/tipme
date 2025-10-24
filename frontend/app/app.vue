@@ -26,7 +26,7 @@
             </button>
           </nav>
           <div class="text-xs text-gray-500">
-            © 2025 Vires Labs<br />All rights reserved.
+            © {{ new Date().getFullYear() }} <span class="text-emerald-400 font-semibold">roma-marshall</span> — built with 💚 on Flow EVM
           </div>
         </aside>
 
