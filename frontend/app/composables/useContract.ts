@@ -1,5 +1,6 @@
 import { ethers } from "ethers";
 import TipMe from "~/abi/TipMe.json";
+import { useAppKitNetwork } from "@reown/appkit/vue";
 
 /**
  * Создаёт контракт TipMe с автоматическим выбором:
@@ -9,7 +10,23 @@ import TipMe from "~/abi/TipMe.json";
 export async function useContract() {
     let provider: ethers.Provider;
     let signer: ethers.Signer | null = null;
+    const network = useAppKitNetwork();
     const config = useRuntimeConfig()
+
+    // карта RPC по сетям
+    const rpcByChain = {
+        11155111: config.public.rpc?.sepolia || "https://ethereum-sepolia.publicnode.com",
+        747: config.public.rpc?.flow_evm || "https://mainnet.evm.nodes.onflow.org",
+    };
+
+    // определяем текущую сеть
+    const chainId = network.value?.chainId || 11155111; // default Sepolia
+    const rpcUrl = rpcByChain[chainId as keyof typeof rpcByChain];
+
+    if (!rpcUrl) {
+        console.error("❌ Unknown RPC for chain:", chainId);
+        return;
+    }
 
     if (typeof window !== "undefined" && window.ethereum) {
         // Web3-провайдер из MetaMask (read+write)
@@ -21,7 +38,7 @@ export async function useContract() {
         }
     } else {
         // Публичный RPC-провайдер (только чтение)
-        provider = new ethers.JsonRpcProvider(config.public.rpcUrl);
+        provider = new ethers.JsonRpcProvider(rpcUrl);
     }
 
     // если signer есть → контракт с подписью, иначе только чтение

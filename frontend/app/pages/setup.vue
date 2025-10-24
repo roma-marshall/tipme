@@ -42,7 +42,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted, computed } from "vue";
-import { useAppKitAccount } from "@reown/appkit/vue";
+import { useAppKit, useAppKitAccount } from "@reown/appkit/vue";
 import { useContract } from "~/composables/useContract";
 import { navigateTo } from "#app";
 import { useTxToast } from "~/composables/useTxToast";
@@ -107,6 +107,11 @@ async function saveProfile() {
     isSaving.value = false;
   }
 }
+
+const openConnectModal = () => {
+  const { open } = useAppKit();
+  open({ view: "Connect" });
+};
 </script>
 
 <style scoped>

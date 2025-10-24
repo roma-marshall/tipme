@@ -32,7 +32,8 @@ export async function useTxToast<T extends (...args: any[]) => Promise<any>>(
 
         // 3️⃣ Success phase
         if (receipt.status === 1) {
-            const link = `https://sepolia.etherscan.io/tx/${tx.hash}`;
+            // const link = `https://sepolia.etherscan.io/tx/${tx.hash}`;
+            const link = `https://evm.flowscan.io/tx/${tx.hash}`;
             show(messages?.success || "✅ Transaction confirmed!", "success", false, link);
         } else {
             show("⚠️ Transaction reverted on-chain", "error");

@@ -10,12 +10,16 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 async function main() {
-  const rpcUrl = process.env.SEPOLIA_RPC_URL;
-  const privateKey = process.env.SEPOLIA_PRIVATE_KEY;
-  if (!rpcUrl || !privateKey) throw new Error("Missing RPC or PRIVATE_KEY");
+  const rpcUrl = process.env.FLOW_EVM_RPC_URL;
+  const privateKey = process.env.FLOW_EVM_PRIVATE_KEY;
+
+  if (!rpcUrl || !privateKey) {
+    throw new Error("❌ Missing RPC URL or SEPOLIA_PRIVATE_KEY in .env");
+  }
 
   const provider = new ethers.JsonRpcProvider(rpcUrl);
   const wallet = new ethers.Wallet(privateKey, provider);
+
   console.log("🚀 Deploying NFTAchievements with account:", wallet.address);
 
   const artifact = JSON.parse(

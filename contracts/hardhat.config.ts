@@ -36,6 +36,18 @@ const config: HardhatUserConfig = {
       url: configVariable("SEPOLIA_RPC_URL"),
       accounts: [configVariable("SEPOLIA_PRIVATE_KEY")],
     },
+    flowTestnet: {
+      type: "http",
+      chainType: "l1",
+      url: configVariable("FLOW_EVM_TESTNET_RPC_URL"),
+      accounts: [configVariable("FLOW_EVM_TESTNET_PRIVATE_KEY")],
+    },
+    flowEvm: {
+      type: "http",
+      chainType: "l1",
+      url: configVariable("FLOW_EVM_RPC_URL"),
+      accounts: [configVariable("FLOW_EVM_PRIVATE_KEY")],
+    },
   },
 };
 

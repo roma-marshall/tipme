@@ -12,12 +12,12 @@
             min="0.001"
             step="0.001"
             class="w-full bg-gray-800 text-white border border-gray-700 rounded-lg px-4 py-2 text-center"
-            placeholder="0.005 ETH"
+            placeholder=""
         />
 
         <p v-if="quote" class="text-xs text-gray-400 mt-2">
-          You send: {{ amount }} ETH → Receiver gets: {{ quote.net }} ETH<br />
-          Fee: {{ quote.fee }} ETH (5%)
+          You send: {{ amount }} FLOW → Receiver gets: {{ quote.net }} FLOW<br />
+          Fee: {{ quote.fee }} FLOW (5%)
         </p>
 
         <div class="mt-5 flex flex-col gap-2">
@@ -53,7 +53,7 @@ import { useTxToast } from "~/composables/useTxToast";
 const props = defineProps<{ visible: boolean; to: string }>();
 const emit = defineEmits(["close"]);
 
-const amount = ref("0.005");
+const amount = ref("5");
 const quote = ref<{ fee: string; net: string } | null>(null);
 const loading = ref(false);
 
