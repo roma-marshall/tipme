@@ -105,7 +105,7 @@
           class="text-center text-xs text-gray-500 py-6 border-t border-gray-800/70
                backdrop-blur-sm bg-gray-900/40"
       >
-        © 2025 <span class="text-emerald-400 font-semibold">Vires Labs</span> — built with 💚 on EVM
+        © {{ new Date().getFullYear() }} <span class="text-emerald-400 font-semibold">roma-marshall</span> — built with 💚 on Flow EVM
       </footer>
     </div>
     <ToastList />
