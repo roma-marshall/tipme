@@ -50,10 +50,42 @@ tipme/
 ## 🧩 Smart Contracts
 
 - [**TipJar.sol**](https://evm.flowscan.io/address/0x8A340f363aA0bcCaC7541502759E4B720685153e) — handles deposits, tipping, balances, and withdrawals
-
 - [**TipMe.sol**](https://evm.flowscan.io/address/0xd85C2a5301aD353FdCBb7d0ce6f2494798A97c25) — manages user profiles and metadata
-
 - [**NFTAchievements.sol**](https://evm.flowscan.io/address/0xc586A2CA2e0F4c3A268d0f9CE2c96AcEcf34aE02) — ERC-721 achievements with secure minting
+
+---
+
+## ✅ Verified Contracts
+
+### 💰 TipJar.sol
+- **Address:** [0x8A34...153e](https://evm.flowscan.io/address/0x8A340f363aA0bcCaC7541502759E4B720685153e?tab=contract)
+- **Compiler:** 0.8.28
+- **Network:** Flow EVM Mainnet
+- **Verified:** ✅ Flowscan
+- **Purpose:** Handles user tips, fee collection, and withdrawals
+
+---
+
+### 🌐 TipMe.sol
+- **Address:** [0xd85C...7c25](https://evm.flowscan.io/address/0xd85C2a5301aD353FdCBb7d0ce6f2494798A97c25?tab=contract)
+- **Compiler:** 0.8.28
+- **Network:** Flow EVM Mainnet
+- **Verified:** ✅ Flowscan
+- **Purpose:** Core profile registry and dApp logic for TipMe
+
+---
+
+### 🏆 NFTAchievements.sol
+- **Address:** [0xc586...aE02](https://evm.flowscan.io/address/0xc586A2CA2e0F4c3A268d0f9CE2c96AcEcf34aE02?tab=contract)
+- **Compiler:** 0.8.28
+- **Network:** Flow EVM Mainnet
+- **Verified:** ✅ Flowscan
+- **Purpose:** Mintable NFT badges for user achievements within TipMe
+
+---
+
+💚 Built with Hardhat 3 · OpenZeppelin 5 · Deployed on Flow EVM  
+Part of the **#ReWTF** and **TipMe App** ecosystem.
 
 ---
 
